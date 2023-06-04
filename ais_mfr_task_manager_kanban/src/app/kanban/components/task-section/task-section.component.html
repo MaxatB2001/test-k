@@ -1,0 +1,46 @@
+<div class="task-section" cdkScrollable>
+  <div class="task-section-header">
+    <h3 class="title">
+      {{ index === taskStatusList.ASSIGNED ? 'Задачи' : index === taskStatusList.PROCESS ? 'В работе' : 'Готово' }}
+    </h3>
+    <div class="buttons">
+      <mat-icon mat-button class="my-icon" fontIcon="keyboard_control"></mat-icon>
+      <!-- [matMenuTriggerFor]="menu1" -->
+      <!-- <mat-menu #menu1="matMenu"> -->
+        <!-- <button (click)="sortTasksByDateDown()" mat-menu-item>
+          <div class="menu-item">
+            <div class="menu-item-icon">
+              <img
+                style="width: 100%"
+                src="../../../../assets/chevron-down-svgrepo-com.svg"
+              />
+            </div>
+            <span>Сортировка по дате</span>
+          </div>
+        </button> -->
+        <!-- <button (click)="sortByPriority()" mat-menu-item>
+          <div class="my-menu-item">
+            <mat-icon fontIcon="sort"></mat-icon>
+            <span>Приоритет</span>
+        </div>
+        </button>
+        <button (click)="deleteSectionHandler()" mat-menu-item>
+          <div class="my-menu-item">
+              <mat-icon fontIcon="delete"></mat-icon>
+              <span>Удалить раздел</span>
+          </div>
+        </button>
+      </mat-menu> -->
+    </div>
+  </div>
+  <div
+    class="task-container"
+    cdkDropList
+    [cdkDropListData]="tasks"
+    [cdkDropListAutoScrollStep]="20"
+    (cdkDropListDropped)="drop($event)"
+    [id]="index.toString()"
+  >
+    <task *ngFor="let task of tasks" [task]="task"></task>
+  </div>
+</div>

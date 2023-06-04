@@ -1,0 +1,42 @@
+services:
+  postgres:
+    image: postgres:15.1
+    volumes:
+      - ./docker_postgres_init.sql:/docker-entrypoint-initdb.d/docker_postgres_init.sql
+      - ./postgres_microservice_back:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: task_manager
+      POSTGRES_PASSWORD: task_manager
+      POSTGRES_DB:  task_manager
+    ports:
+      - 5452:5432
+    restart: unless-stopped
+
+  back:
+    build: ais_msrv_kanban/
+    #like ais_mfr_contacts/
+    command: npm run start:listener
+    ports:
+      - 48400:80
+    depends_on:
+      - postgres
+    #  - front
+
+  # front:
+  #   build: ais_mfr_task_manager_kanban/
+  #   labels:
+  #     SERVICE_CHECK_INTERVAL: 10s
+  #   ports:
+  #      - 48450:80
+  #   depends_on:
+  #     - back
+  
+  front2:
+    build: ais_mfr_kanban_admin/
+    labels:
+      SERVICE_CHECK_INTERVAL: 10s
+    ports:
+       - 48900:80
+    depends_on:
+      - back
+  

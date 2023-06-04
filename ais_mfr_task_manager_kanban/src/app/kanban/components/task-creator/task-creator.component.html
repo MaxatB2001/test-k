@@ -1,0 +1,8 @@
+<form (submit)="createTask(taskTitle)">
+  <div class="task-creator"><input type="text" autofocus placeholder="Название задачи" [(ngModel)]="taskTitle" name="taskTitle" /></div>
+  <div class="buttons">
+    <button class="add-button" type="submit">Добавить карточку</button>
+    <mat-icon class="close-button" (click)="close()" class="my-icon" fontIcon="close"></mat-icon>
+    <!-- <button (click)="close()" type="button" class="close-button"><img class="close-icon" src="../../../../assets//close-svgrepo-com (1).svg" /></button> -->
+  </div>
+</form>

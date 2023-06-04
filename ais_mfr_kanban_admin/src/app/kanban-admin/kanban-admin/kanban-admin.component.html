@@ -1,0 +1,78 @@
+<mat-sidenav-container style="margin-left: 3vw; height: 100vh; color: #707172">
+  <mat-sidenav
+    style="position: absolute; top: 50px; width: 30%; color: #707172"
+    position="end"
+    #sidenav
+    mode="side"
+    [(opened)]="opened"
+    [fixedInViewport]="true"
+  >
+    <app-side-bar></app-side-bar>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <div class="kanban-admin-wrapper">
+      <form style="width: 300px; margin-top: 10px; margin-left: 20px;">
+        <input
+          class="my-input"
+          type="text"
+          placeholder="выберите сотрудника"
+          [formControl]="myControl"
+          [matAutocomplete]="auto"
+        />
+        <mat-autocomplete
+          #auto="matAutocomplete"
+          [displayWith]="getOptionText"
+          (optionSelected)="addUserColumn($event.option.value)"
+        >
+          <mat-option
+            *ngFor="let option of filteredOptions | async"
+            [value]="option"
+          >
+            {{ option.firstName + " " + option.lastName }}
+          </mat-option>
+        </mat-autocomplete>
+      </form>
+      <div class="kanban-admin-board"  cdkScrollable>
+        <app-task-column
+          [tasks]="allTasks.newTasks"
+          [index]="taskStatusList.NEW"
+          [user]="null"
+          style="flex-basis: 400px; flex-shrink: 0;"
+          [expandColumns]="expandColumns.bind(this)"
+          [isWorkColumnsExpanded]="isWorkColumnsExpanded"
+        ></app-task-column>
+        <app-task-column
+          *ngIf="isWorkColumnsExpanded"
+          [tasks]="allTasks.processTasks"
+          [index]="taskStatusList.PROCESS"
+          [user]="null"
+          style="flex-basis: 400px; flex-shrink: 0;"
+        ></app-task-column>
+        <app-task-column
+          *ngIf="isWorkColumnsExpanded"
+          [tasks]="allTasks.doneTasks"
+          [index]="taskStatusList.DONE"
+          [user]="null"
+          style="flex-basis: 400px; flex-shrink: 0;"
+        ></app-task-column>
+        <ng-container *ngFor="let user of userAssignedColumns" >
+            <app-task-column
+            [deleteColumn]="deleteUserColumn"
+            [user]="user"
+            [columnId] = "user.id"
+            [tasks]="user.newTasks"
+            [isExpanded]="user.isTaskExpanded"
+            [index]="
+              user.performerKeycloackUser.firstName +
+              ' ' +
+              user.performerKeycloackUser.lastName
+            "
+            style="flex-basis: 400px; flex-shrink: 0;"
+          ></app-task-column>
+          <process-column *ngIf="user.isTaskExpanded" style="flex-basis: 400px; flex-shrink: 0;" [title]="'В работе'" [tasks]="user.processTasks"></process-column>
+          <process-column *ngIf="user.isTaskExpanded" style="flex-basis: 400px; flex-shrink: 0;" [title]="'Готово'" [tasks]="user.doneTasks"></process-column>
+        </ng-container>
+      </div>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

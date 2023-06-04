@@ -1,0 +1,203 @@
+<div class="dialog-wrapper" *ngIf="data">
+    <div style="display: flex; align-items: center;">
+     <input
+     class="title-input"
+     (ngModelChange)="updateTaskValue('title', $event)"
+     [(ngModel)]="data.title"
+   />
+   <mat-icon [ngStyle]="{cursor: 'pointer',color: 'gray'}" (click)="closeSidebar()" fontIcon="close"></mat-icon>
+    </div>
+     <div class="main">
+       <div class="status-row">
+         <div class="row-title">Важность</div>
+         <div
+           [mat-menu-trigger-for]="vmenu"
+           class="coefficient"
+           [ngClass]="{
+           red: importanceList.finansialLoss === data.importance,
+           lightgreen: importanceList.reputationLoss === data.importance,
+           yellow: importanceList.profitLoss === data.importance,
+         }"
+         >
+           {{ data.importance }}
+         </div>
+         <mat-menu #vmenu="matMenu">
+           <button
+             (click)="updateImportance(item)"
+             *ngFor="let item of importance"
+             mat-menu-item
+           >
+             {{ item }}
+           </button>
+         </mat-menu>
+       </div>
+       <div class="status-row">
+         <div class="row-title">Срочность</div>
+         <div
+           [mat-menu-trigger-for]="umenu"
+           class="coefficient"
+           [ngClass]="{
+           red: urgencyList.twoHours === data.urgency,
+           yellow: urgencyList.eightHours === data.urgency,
+           darkgreen: urgencyList.week === data.urgency,
+           lightgreen: urgencyList.month === data.urgency,
+         }"
+         >
+           {{ data.urgency }}
+         </div>
+         <mat-menu #umenu="matMenu">
+           <button
+             (click)="updateUrgency(item)"
+             *ngFor="let item of urgency"
+             mat-menu-item
+           >
+             {{ item }}
+           </button>
+         </mat-menu>
+       </div>
+       <div class="status-row">
+         <div class="row-title">Сложность</div>
+         <div
+           [mat-menu-trigger-for]="cmenu"
+           class="coefficient"
+           [ngClass]="{
+           red: complexityList.megaTask === data.complexity,
+           lightgreen: complexityList.small === data.complexity,
+           yellow: complexityList.task === data.complexity,
+         }"
+         >
+           {{ data.complexity }}
+         </div>
+         <mat-menu #cmenu="matMenu">
+           <button
+             (click)="updateComplexity(item)"
+             *ngFor="let item of complexity"
+             mat-menu-item
+           >
+             {{ item }}
+           </button>
+         </mat-menu>
+       </div>
+       <div class="deadline">
+         <div class="row-title">Начало выполнения</div>
+         <div class="date" (click)="picker1.open()">
+           <mat-icon fontIcon="calendar_today"></mat-icon>
+           <input
+             (dateChange)="onDateChangeStart($event)"
+             class="hide"
+             type="text"
+             matInput
+             [matDatepicker]="picker1"
+           />
+           <div *ngIf="data.created_at">{{ format(data.created_at) }}</div>
+           <div *ngIf="!data.created_at">Нет начала выполнения</div>
+         </div>
+         <mat-icon
+           *ngIf="data.created_at"
+           (click)="removeStartDate()"
+           style="cursor: pointer"
+           fontIcon="close"
+         ></mat-icon>
+         <mat-datepicker-toggle
+           class="hide"
+           matIconSuffix
+           [for]="picker1"
+           #dateToggle
+         ></mat-datepicker-toggle>
+         <mat-datepicker #picker1></mat-datepicker>
+       </div>
+       <div class="deadline">
+         <div class="row-title">Срок выполнения</div>
+         <div class="date" (click)="picker.open()">
+           <mat-icon fontIcon="calendar_today"></mat-icon>
+           <input
+             (dateChange)="onDateChangeDeadline($event)"
+             class="hide"
+             type="text"
+             matInput
+             [matDatepicker]="picker"
+           />
+           <div *ngIf="data.deadline">{{ format(data.deadline) }}</div>
+           <div *ngIf="!data.deadline">Нет срока выполнения</div>
+         </div>
+         <mat-icon
+           *ngIf="data.deadline"
+           (click)="removeDeadline()"
+           style="cursor: pointer"
+           fontIcon="close"
+         ></mat-icon>
+         <mat-datepicker-toggle
+           class="hide"
+           matIconSuffix
+           [for]="picker"
+           #dateToggle
+         ></mat-datepicker-toggle>
+         <mat-datepicker #picker></mat-datepicker>
+       </div>
+       <div class="status-row">
+        <div class="row-title">Выполнить после</div>
+        <form *ngIf="data.do_before == undefined" class="example-form">
+          <input type="text"
+                 placeholder="Выбрать задачу"
+                 [formControl]="control"
+                 [matAutocomplete]="auto"
+                 class="my-input">
+          <mat-autocomplete (optionSelected)="optionSelected($event.option.value)" [displayWith]="getOptionText" #auto="matAutocomplete">
+            <mat-option *ngFor="let task of filteredAllTasks | async" [value]="task">
+              {{(task.title.length > 15) ? (task.title | slice:0:15) + '...': (task.title)}}
+            </mat-option>
+          </mat-autocomplete>
+        </form>
+        <sub-task *ngIf="data.do_before" [task]="data.do_before"></sub-task>
+       </div>
+       <div *ngIf="data.subTask && data.subTask.length > 0">
+        <div class="row-title">Подзадачи</div>
+        <div class="sub-tasks-container">
+          <sub-task *ngFor="let subTask of data.subTask" [task]="subTask"></sub-task>
+        </div>
+       </div>
+       <div>
+        <button (click)="showSubTaskCreator = true" *ngIf="!showSubTaskCreator" style="font-size: 14px; font-weight: normal; color: gray;" mat-stroked-button><mat-icon fontIcon="add"></mat-icon> Добавить подзадачу</button>
+        <form (OuterClickClose)="showSubTaskCreator = false" *ngIf="showSubTaskCreator" (submit)="addSubTask($event)">
+          <input type="text"
+                 placeholder="Заголовок подзадачи"
+                 [formControl]="subTaskTitle"
+                 class="my-input">
+        </form>
+      </div>
+      <label for="file-upload" class="custom-file-upload">
+        <mat-icon fontIcon="upload_file"></mat-icon>
+        <div>Загрузить файл</div>
+      </label>
+      <input id="file-upload" type="file" (change)="fileChange($event)"/>
+      <div *ngIf="data.files && data.files.length > 0" >
+        <div class="row-title">Файлы</div>
+        <div class="file-list">
+          <a [href]="file.fileUrl" class="file" *ngFor="let file of data.files">
+            <img *ngIf="(file.fileName | getFileExtension) === 'image'" class="file-img" [src]="file.fileUrl"/>
+            <div *ngIf="(file.fileName | getFileExtension) !== 'image'" class="file-any">
+              <mat-icon style="width: 100%;" fontIcon="insert_drive_file"></mat-icon>
+              <span>{{file.fileName}}</span>
+            </div>
+            <!-- <mat-icon style="display: flex; align-items: center; font-size: 18px;" [fontIcon]="file.fileName | getFileExtension"></mat-icon>
+            <a [href]="file.fileUrl">{{file.fileName}}</a>
+            <mat-icon style="display: flex; align-items: center; font-size: 18px;cursor: pointer;" (click)="deleteFile(file)" fontIcon="delete"></mat-icon> -->
+            </a>
+         </div>
+      </div>
+      <div>
+         <div class="row-title">Описание</div>
+         <textarea
+           placeholder="Описание задачи"
+           rows="8"
+           class="description"
+           [(ngModel)]="data.description"
+           (ngModelChange)="updateTaskValue('description', $event)"
+         ></textarea>
+       </div>
+       <button (click)="deleteHandler()" mat-raised-button color="warn">
+         Удалить задачу
+       </button>
+     </div>
+   </div>
+   

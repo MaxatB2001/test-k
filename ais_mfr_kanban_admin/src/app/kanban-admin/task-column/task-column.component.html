@@ -1,0 +1,38 @@
+<div class="column">
+    <div class="task-section-header">
+        <h3 class="title">
+           {{index !== taskStatusList.NEW ? index : 'Задачи'}}
+        </h3>
+        <div *ngIf="index !== taskStatusList.PROCESS && index !== taskStatusList.DONE" class="buttons">
+          <mat-icon style="display: flex;" *ngIf="index == taskStatusList.NEW" class="my-icon" fontIcon="add" (click)="showTaskCreator = true"></mat-icon>
+          <mat-icon  *ngIf="index !== taskStatusList.NEW" mat-button class="my-icon" style="display: flex;" [matMenuTriggerFor]="menu1" fontIcon="keyboard_control" ></mat-icon>
+          <mat-icon (click)="changeIsExpanded()" [ngClass]="{'icon-rotate' : user && user.isTaskExpanded || isWorkColumnsExpanded}" class="my-icon" style="display: flex;" fontIcon="navigate_next"></mat-icon>
+          <mat-menu  #menu1="matMenu">
+            <button (click)="deleteColumn(columnId)" mat-menu-item>
+              <div class="my-menu-item">
+                  <mat-icon fontIcon="delete"></mat-icon>
+                  <span>Удалить раздел</span>
+              </div>
+            </button>
+          </mat-menu>
+        </div>
+      </div>
+      <task-creator
+        (OuterClickClose)="showTaskCreator = false"
+        *ngIf="showTaskCreator"
+        [close]="closeCreation.bind(this)"
+        [createTask]="createTask.bind(this)"
+      ></task-creator>
+      <div
+        class="task-container"
+        cdkDropList
+        [cdkDropListData]="tasks"
+        [cdkDropListConnectedTo]="dragDropService.dropLists"
+        [cdkDropListEnterPredicate]="allowDropPredicate"
+        [cdkDropListAutoScrollStep]="20"
+        (cdkDropListDropped)="drop($event)"
+        [id]="user ? user.performerKeycloackUser.id: index"
+      >
+        <task [isCurrentUserColumns]="user ? false : true" *ngFor="let task of tasks" [task]="task"></task>
+      </div>
+</div>

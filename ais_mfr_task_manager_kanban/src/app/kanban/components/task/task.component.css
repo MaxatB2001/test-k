@@ -1,0 +1,74 @@
+.task {
+  /* display: flex; */
+  padding: 5px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 5px;
+  /* flex-direction: column; */
+  /* justify-content: space-between; */
+  margin-top: 5px;
+  cursor: pointer;
+  /* min-height: 90px; */
+  transition: 0.2s border-color;
+  width: 100%;
+  word-break: break-all;
+  background-color: green;
+  color: #FEF9F3;
+}
+.cdk-drag-preview {
+  border-radius: 10px;
+  border-color: rgb(50, 50, 182);
+  word-break: break-all;
+}
+
+.task-hover:hover {
+  border-color: #aeabac;
+}
+
+.date {
+  padding: 3px;
+  transition: background-color 0.2s;
+  border-radius: 4px;
+}
+
+.date:hover {
+  background-color: #f9f8f8;
+}
+
+.date-input {
+  width: 0;
+  opacity: 0;
+  height: 0;
+  border: none;
+  padding: 0;
+}
+
+.date-wrapper {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+}
+
+.task-top {
+  display: flex;
+  align-items: center;
+}
+
+.closed {
+  background-color: #ffd2cc;
+  color: #601e16;
+}
+
+.process {
+  background-color: #f8e6a0;
+  color: #533f04;
+}
+
+.done {
+  background-color: #baf3db;
+  color: #164b35;
+}
+
+.open {
+  background-color: #cce0ff;
+  color: #09326c;
+}

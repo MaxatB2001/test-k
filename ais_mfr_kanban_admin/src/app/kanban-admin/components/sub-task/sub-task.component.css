@@ -1,0 +1,13 @@
+.sub-task {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 3px;
+    border: 1px solid lightgray;
+    border-radius: 4px;
+    gap: 5px;
+}
+
+.sub-task:hover {
+    border-color: gray;
+}

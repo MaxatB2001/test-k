@@ -1,0 +1,25 @@
+<div class="column">
+  <div class="task-section-header">
+    <h3 class="title">
+      {{ title }}
+    </h3>
+  </div>
+  <div class="task-container">
+    <div
+      *ngFor="let task of tasks"
+      [ngStyle]="{ backgroundColor: task.coefficient | getTaskColor }"
+      [style.border-color]="
+        openedTask && openedTask.id == task.id
+          ? 'rgba(0,0,0, 0.6)'
+          : 'rgba(0,0,0, 0.2)'
+      "
+      [style.border-width]="
+        openedTask && openedTask.id == task.id ? '2px' : '1px'
+      "
+      class="task task-hover"
+      (click)="openSideBar(task)"
+    >
+      <div>{{ task.title }}</div>
+    </div>
+  </div>
+</div>

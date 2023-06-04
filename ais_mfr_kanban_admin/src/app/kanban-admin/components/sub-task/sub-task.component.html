@@ -1,0 +1,7 @@
+<div (click)="setCurrentTask()" class="sub-task">
+    <mat-icon [fontIcon]="task.status == taskStatusList.PROCESS ? 'av_timer' : task.status == taskStatusList.DONE ? 'done' : 'fiber_new'"></mat-icon>
+    <div>
+        {{task.title| slice:0:30}}
+    </div>
+
+</div>

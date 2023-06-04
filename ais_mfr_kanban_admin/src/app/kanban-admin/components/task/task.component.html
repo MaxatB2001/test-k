@@ -1,0 +1,30 @@
+<div
+  [ngStyle]="{ backgroundColor: task.coefficient | getTaskColor }"
+  [style.border-color]="(openedTask && openedTask.id == task.id) ? 'rgba(0,0,0, 0.6)' : 'rgba(0,0,0, 0.2)'"
+  [style.border-width]="(openedTask && openedTask.id == task.id) ? '2px' : '1px'"
+  class="task task-hover"
+  cdkDrag
+  [cdkDragData]="task"
+  (click)="openSideBar($event)"
+  (cdkDragMoved)="dragMoved($event)"
+  (cdkDragReleased)="dragReleased($event)"
+>
+  <div>{{ task.title }}</div>
+  <div *ngIf="task.subTask && task.subTask.length > 0" class="sub-tasks-icon">
+    <div>{{task.subTask.length}}</div>
+    <mat-icon style="font-size: 16px;display: flex;align-items: center;justify-content: center;" fontIcon="account_tree"></mat-icon>
+  </div>
+  <div
+    cdkDropList
+    [cdkDropListData]="newSubTasks"
+    (cdkDropListDropped)="drop($event)"
+    [cdkDropListConnectedTo]="dragDropService.dropLists"
+    [cdkDropListEnterPredicate]="allowDropPredicate"
+    [id]="'sub-tasks'"
+    class="sub-task-container"
+  >
+    <ng-container *ngFor="let sub of newSubTasks">
+        <task [task]="sub"></task>
+    </ng-container>
+  </div>
+</div>

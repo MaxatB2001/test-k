@@ -1,0 +1,79 @@
+<div class="dialog-wrapper" *ngIf="data">
+ <div style="display: flex; align-items: center;">
+  <input
+  class="title-input"
+  (ngModelChange)="updateTaskValue('title', $event)"
+  [(ngModel)]="data.title"
+/>
+<mat-icon [ngStyle]="{cursor: 'pointer',color: 'gray'}" (click)="sidebarService.setIsOpen(false)" fontIcon="close"></mat-icon>
+ </div>
+  <div class="main">
+    <div class="status-row">
+      <div class="row-title">Важность</div>
+      <div
+        class="coefficient"
+        [ngClass]="{
+        red: importanceList.finansialLoss === data.importance,
+        lightgreen: importanceList.reputationLoss === data.importance,
+        yellow: importanceList.profitLoss === data.importance,
+      }"
+      >
+        {{ data.importance }}
+      </div>
+    </div>
+    <div class="status-row">
+      <div class="row-title">Срочность</div>
+      <div
+        class="coefficient"
+        [ngClass]="{
+        red: urgencyList.twoHours === data.urgency,
+        yellow: urgencyList.eightHours === data.urgency,
+        darkgreen: urgencyList.week === data.urgency,
+        lightgreen: urgencyList.month === data.urgency,
+      }"
+      >
+        {{ data.urgency }}
+      </div>
+    </div>
+    <div class="status-row">
+      <div class="row-title">Сложность</div>
+      <div
+        class="coefficient"
+        [ngClass]="{
+        red: complexityList.megaTask === data.complexity,
+        lightgreen: complexityList.small === data.complexity,
+        yellow: complexityList.task === data.complexity,
+      }"
+      >
+        {{ data.complexity }}
+      </div>
+    </div>
+    <div class="deadline">
+      <div class="row-title">Начало выполнения</div>
+      <div class="date">
+        <mat-icon fontIcon="calendar_today"></mat-icon>
+        <div *ngIf="data.created_at">{{ format(data.created_at) }}</div>
+        <div *ngIf="!data.created_at">Нет начала выполнения</div>
+      </div>
+    </div>
+    <div class="deadline">
+      <div class="row-title">Срок выполнения</div>
+      <div class="date">
+        <mat-icon fontIcon="calendar_today"></mat-icon>
+        <div *ngIf="data.deadline">{{ format(data.deadline) }}</div>
+        <div *ngIf="!data.deadline">Нет срока выполнения</div>
+      </div>
+    </div>
+    <div>
+      <div class="row-title">Описание</div>
+      <textarea
+        readonly
+        placeholder="Описание задачи"
+        rows="8"
+        class="description"
+        [(ngModel)]="data.description"
+        (ngModelChange)="updateTaskValue('description', $event)"
+      ></textarea>
+    </div>
+  </div>
+</div>
