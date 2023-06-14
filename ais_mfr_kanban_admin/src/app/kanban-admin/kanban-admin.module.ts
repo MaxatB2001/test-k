@@ -46,8 +46,6 @@ import { GetFileExtensionPipe } from './pipes/get-file-extension.pipe'
     FormsModule,
     DragDropModule,
     MatButtonModule,
-    // BrowserModule,
-    // BrowserAnimationsModule,
     MatAutocompleteModule,
     MatInputModule,
     ReactiveFormsModule,

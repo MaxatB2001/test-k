@@ -21,15 +21,6 @@ services:
     depends_on:
       - postgres
     #  - front
-
-  # front:
-  #   build: ais_mfr_task_manager_kanban/
-  #   labels:
-  #     SERVICE_CHECK_INTERVAL: 10s
-  #   ports:
-  #      - 48450:80
-  #   depends_on:
-  #     - back
   
   front2:
     build: ais_mfr_kanban_admin/

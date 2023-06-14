@@ -3,7 +3,7 @@ export const environment = {
 };
   
 export const keycloakConfigInfo = {
-    url: 'https://auth.k-portal.ru',
+    url: 'https://test-auth.k-portal.ru',
     realm: 'test-realm',
     clientId: 'frontend-client'
 };

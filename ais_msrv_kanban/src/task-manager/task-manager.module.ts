@@ -10,8 +10,17 @@ import { UserColumnShema } from 'src/schemas/UserColumn.schema';
 import { MinioClientModule } from 'src/minio-client/minio-client.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([TaskSectionSchema, TaskSchema, Report, UserColumnShema]), KeycloakModule, MinioClientModule],
+  imports: [
+    TypeOrmModule.forFeature([
+      TaskSectionSchema,
+      TaskSchema,
+      Report,
+      UserColumnShema,
+    ]),
+    KeycloakModule,
+    MinioClientModule,
+  ],
   controllers: [TaskManagerController],
-  providers: [TaskManagerService]
+  providers: [TaskManagerService],
 })
 export class TaskManagerModule {}

@@ -32,53 +32,78 @@ import { FileInterceptor } from '@nestjs/platform-express';
 export class TaskManagerController {
   constructor(private taskManagerService: TaskManagerService) {}
 
-  @Get()
-  syncResource() {
-    return RESOURCES
-  }
-
-  @Get("/all-tasks")
+  @Get('/all-tasks')
   get_taskSchema_allTasks(@AuthenticatedUser() user: any) {
-    return this.taskManagerService.getAllTasks(user.sub)
+    return this.taskManagerService.getAllTasks(user.sub);
   }
 
-  @Get("/assigned-tasks")
+  @Post('/add-file-to-task/:id')
+  @UseInterceptors(FileInterceptor('file'))
+  post_taskSchema_addFileToTask(
+    @AuthenticatedUser() user: any,
+    @UploadedFile() file: Express.Multer.File,
+    @Param('id') id: number,
+  ) {
+    return this.taskManagerService.addFileToTask(file, id);
+  }
+
+  @Patch(':id')
+  update_taskSchema_Task(
+    @AuthenticatedUser() user: any,
+    @Param('id') id: number,
+    @Body() task: TaskSchema,
+  ) {
+    return this.taskManagerService.updateTask(id, task);
+  }
+
+  @Delete('/delete-task/:id')
+  delete_taskSchema_Task(
+    @AuthenticatedUser() user: any,
+    @Param('id') taskId: number,
+  ) {
+    console.log(taskId);
+    return this.taskManagerService.deleteTask(taskId);
+  }
+
+  @Get('/assigned-tasks')
   get_taskSchema_assignedTasks(@AuthenticatedUser() user: any) {
-    return this.taskManagerService.getAssignedTasks(user.sub)
+    return this.taskManagerService.getAssignedTasks(user.sub);
   }
-
-  // @Get('/user-sections')
-  // @UseInterceptors(TokenInterceptor)
-  // @AuthDecorator()
-  // get_taskSectionSchema_UserSections(@AuthenticatedUser() user: any) {
-  //   console.log(user);
-  //   return this.taskManagerService.getUserSections(user.sub);
-  // }
 
   @Get('/sub-tasks/:id')
-  get_taskSchema_TaskTree(@AuthenticatedUser() user: any, @Param('id') id: number) {
+  get_taskSchema_TaskTree(
+    @AuthenticatedUser() user: any,
+    @Param('id') id: number,
+  ) {
     console.log(id);
     return this.taskManagerService.getSubTasks(id);
   }
 
   @Post('/set-do-after')
-  post_taskSchema_setDoAfter(@AuthenticatedUser() user: any, @Body() taskIds: {beforeTaskId: number, afterTaskId: number}) {
-    return this.taskManagerService.setDoAfterTask(taskIds.beforeTaskId, taskIds.afterTaskId)
+  post_taskSchema_setDoAfter(
+    @AuthenticatedUser() user: any,
+    @Body() taskIds: { beforeTaskId: number; afterTaskId: number },
+  ) {
+    return this.taskManagerService.setDoAfterTask(
+      taskIds.beforeTaskId,
+      taskIds.afterTaskId,
+    );
   }
 
-  @Post('/add-file-to-task/:id')
-  @UseInterceptors(FileInterceptor('file'))
-  post_taskSchema_addFileToTask(@AuthenticatedUser() user: any, @UploadedFile() file: Express.Multer.File, @Param("id") id: number) {
-    return this.taskManagerService.addFileToTask(file, id)
-  }
-
-  @Delete("/remove-file-from-task/:id/:fileName")  
-  delete_taskSchema_removeFile(@AuthenticatedUser() user: any, @Param("id") id: number, @Param("fileName") fileName: string) {
-    return this.taskManagerService.removeFile(fileName, id)
+  @Delete('/remove-file-from-task/:id/:fileName')
+  delete_taskSchema_removeFile(
+    @AuthenticatedUser() user: any,
+    @Param('id') id: number,
+    @Param('fileName') fileName: string,
+  ) {
+    return this.taskManagerService.removeFile(fileName, id);
   }
 
   @Post('/create-task')
-  post_taskSchema_task(@AuthenticatedUser() user: any, @Body() dto: CreateTaskDto) {
+  post_taskSchema_task(
+    @AuthenticatedUser() user: any,
+    @Body() dto: CreateTaskDto,
+  ) {
     return this.taskManagerService.createTask(dto, user.sub);
   }
 
@@ -89,7 +114,7 @@ export class TaskManagerController {
 
   @Get('/get-assigned-columns')
   get_UserColumn_AssignedColumns(@AuthenticatedUser() user: any) {
-    return this.taskManagerService.getAssignedUserColumns(user)
+    return this.taskManagerService.getAssignedUserColumns(user);
   }
 
   @Patch('/add-sub-task/:id')
@@ -99,11 +124,6 @@ export class TaskManagerController {
     @Body() task: TaskSchema,
   ) {
     return this.taskManagerService.addSubTask(id, task, user);
-  }
-
-  @Patch(':id')
-  update_taskSchema_Task(@AuthenticatedUser() user: any, @Param('id') id: number, @Body() task: TaskSchema) {
-    return this.taskManagerService.updateTask(id, task);
   }
 
   @Patch('task-section/:id')
@@ -116,33 +136,46 @@ export class TaskManagerController {
   }
 
   @Post('/update-task-sections')
-  async update_taskSectionSchema_TaskSections(@AuthenticatedUser() user: any, @Body() sections) {
+  async update_taskSectionSchema_TaskSections(
+    @AuthenticatedUser() user: any,
+    @Body() sections,
+  ) {
     await this.taskManagerService.updateTaskSections(sections);
   }
 
   @Post('/create-user-column')
-  post_UserColumn_UserColumn(@AuthenticatedUser() user: any, @Body() dto: CreateUserColumnDto) {
-    return this.taskManagerService.createUserColumn(user, dto)
+  post_UserColumn_UserColumn(
+    @AuthenticatedUser() user: any,
+    @Body() dto: CreateUserColumnDto,
+  ) {
+    return this.taskManagerService.createUserColumn(user, dto);
   }
 
   @Delete('/delete-user-column/:id')
-  delete_UserColumn_UserColumn(@AuthenticatedUser() user: any, @Param('id') columnId: number) {
-    return this.taskManagerService.deleteUserColumn(columnId)
+  delete_UserColumn_UserColumn(
+    @AuthenticatedUser() user: any,
+    @Param('id') columnId: number,
+  ) {
+    return this.taskManagerService.deleteUserColumn(columnId);
   }
 
   @Post('/assign-task')
-  post_UserColumn_assignToUser(@AuthenticatedUser() user: any, @Body() dto: AssignTaskToUser) {
-    return this.taskManagerService.assignTaskToUser(user, dto.performerId, dto.taskId)
-  }
-
-  @Delete('/delete-task/:id')
-  delete_taskSchema_Task(@AuthenticatedUser() user: any, @Param('id') taskId: number) {
-    console.log(taskId);
-    return this.taskManagerService.deleteTask(taskId);
+  post_UserColumn_assignToUser(
+    @AuthenticatedUser() user: any,
+    @Body() dto: AssignTaskToUser,
+  ) {
+    return this.taskManagerService.assignTaskToUser(
+      user,
+      dto.performerId,
+      dto.taskId,
+    );
   }
 
   @Delete('/delete-section/:id')
-  delete_taskSectionSchema_Section(@AuthenticatedUser() user: any, @Param('id') sectionId: number) {
+  delete_taskSectionSchema_Section(
+    @AuthenticatedUser() user: any,
+    @Param('id') sectionId: number,
+  ) {
     return this.taskManagerService.deleteSection(sectionId);
   }
 }

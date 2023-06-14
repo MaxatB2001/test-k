@@ -25,7 +25,7 @@ import { MinioClientModule } from './minio-client/minio-client.module';
       database: process.env.POSTGRESQL_DB,
       entities: [TaskSchema, TaskSectionSchema, Report, UserColumnShema],
       synchronize: true,
-      //autoLoadEntities: true
+      autoLoadEntities: true
     }
     ),
 
